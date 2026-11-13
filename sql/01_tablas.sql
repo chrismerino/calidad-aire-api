@@ -1,0 +1,35 @@
+CREATE DATABASE IF NOT EXISTS calidad_aire CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE calidad_aire;
+
+CREATE TABLE IF NOT EXISTS Sensores (
+    Id INT NOT NULL AUTO_INCREMENT,
+    Ubicacion VARCHAR(150) NOT NULL,
+    TipoGas VARCHAR(50) NOT NULL,
+    Estado BOOLEAN NOT NULL DEFAULT TRUE,
+    PRIMARY KEY (Id)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS Lecturas (
+    Id INT NOT NULL AUTO_INCREMENT,
+    SensorId INT NOT NULL,
+    PM2_5 DECIMAL(12,4) NOT NULL,
+    PM10 DECIMAL(12,4) NOT NULL,
+    CO2 DECIMAL(12,4) NOT NULL,
+    FechaHora DATETIME(6) NOT NULL,
+    PRIMARY KEY (Id),
+    INDEX IX_Lecturas_Sensor_Fecha (SensorId, FechaHora),
+    INDEX IX_Lecturas_FechaHora (FechaHora),
+    CONSTRAINT FK_Lecturas_Sensores FOREIGN KEY (SensorId) REFERENCES Sensores (Id) ON DELETE RESTRICT,
+    CONSTRAINT CK_Lecturas_Valores CHECK (PM2_5 >= 0 AND PM10 >= 0 AND CO2 >= 0)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS Alertas (
+    Id INT NOT NULL AUTO_INCREMENT,
+    SensorId INT NOT NULL,
+    Nivel VARCHAR(20) NOT NULL,
+    Mensaje VARCHAR(300) NOT NULL,
+    FechaHora DATETIME(6) NOT NULL,
+    PRIMARY KEY (Id),
+    INDEX IX_Alertas_Sensor_Fecha (SensorId, FechaHora),
+    CONSTRAINT FK_Alertas_Sensores FOREIGN KEY (SensorId) REFERENCES Sensores (Id) ON DELETE RESTRICT
+) ENGINE=InnoDB;

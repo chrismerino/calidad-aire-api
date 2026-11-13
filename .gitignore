@@ -1,0 +1,11 @@
+**/bin/
+**/obj/
+.idea/
+.vs/
+*.user
+.DS_Store
+.env
+**/appsettings.Local.json
+*.log
+acceso-local.txt
+http-client.private.env.json
