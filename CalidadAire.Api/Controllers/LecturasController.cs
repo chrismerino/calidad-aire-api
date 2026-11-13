@@ -81,4 +81,11 @@ public class LecturasController(AireDbContext db, AlertaService alertas) : Contr
         return Ok(new { total, pagina, tamano, datos = lecturas.Select(l => LecturaRespuesta.De(l, contaminante)) });
     }
 
+    [HttpGet("{id:int}/enriquecida")]
+    public async Task<IActionResult> Enriquecida(int id, [FromServices] ClimaService clima, CancellationToken ct)
+    {
+        var lectura = await db.Lecturas.AsNoTracking().SingleOrDefaultAsync(l => l.Id == id, ct)
+            ?? throw new ApiException(404, "La lectura no existe.");
+        return Ok(new { lectura = LecturaRespuesta.De(lectura), clima = await clima.Obtener(ct) });
+    }
 }

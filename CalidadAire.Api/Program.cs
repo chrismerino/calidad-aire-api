@@ -47,7 +47,11 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<AireDbContext>(options =>
     options.UseMySQL(builder.Configuration.GetConnectionString("DefaultConnection")!));
 builder.Services.AddScoped<AlertaService>();
-
+builder.Services.AddHttpClient<ClimaService>(cliente =>
+{
+    cliente.BaseAddress = new Uri(builder.Configuration["Clima:UrlBase"]!);
+    cliente.Timeout = TimeSpan.FromSeconds(8);
+});
 builder.Services.AddSingleton<IPasswordHasher<object>, PasswordHasher<object>>();
 builder.Services.AddExceptionHandler<ErrorHandler>();
 builder.Services.AddProblemDetails();
