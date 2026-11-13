@@ -46,6 +46,7 @@ if (string.IsNullOrWhiteSpace(builder.Configuration["Acceso:Usuario"]) ||
 builder.Services.AddControllers();
 builder.Services.AddDbContext<AireDbContext>(options =>
     options.UseMySQL(builder.Configuration.GetConnectionString("DefaultConnection")!));
+builder.Services.AddScoped<AlertaService>();
 
 builder.Services.AddSingleton<IPasswordHasher<object>, PasswordHasher<object>>();
 builder.Services.AddExceptionHandler<ErrorHandler>();
